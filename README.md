@@ -1,18 +1,5 @@
 # 📚 Hệ Thống Quản Lý Thư Viện Sách
 
-> Website quản lý thư viện sách sử dụng **Node.js + Express + EJS + SQLite**
-
----
-
-## 🚀 Khởi Chạy Nhanh
-
-```bash
-cd "c:\Users\NewUser\Downloads\LTW\Project"
-node app.js
-```
-
-Truy cập: **http://localhost:3000**
-
 ---
 
 ## 👤 Tài Khoản Mẫu
