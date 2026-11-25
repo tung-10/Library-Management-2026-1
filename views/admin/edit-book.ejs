@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Chỉnh Sửa Sách - Admin' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body class="admin-body">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <span>📚</span>
+        <span>Admin Panel</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/admin#stats" class="sidebar-link">
+          <span>📊</span> Thống Kê
+        </a>
+        <a href="/admin#books" class="sidebar-link active">
+          <span>📖</span> Quản Lý Sách
+        </a>
+        <a href="/admin#add-book" class="sidebar-link">
+          <span>➕</span> Thêm Sách
+        </a>
+        <a href="/admin#comments" class="sidebar-link">
+          <span>💬</span> Bình Luận
+        </a>
+        <a href="/admin#contacts" class="sidebar-link">
+          <span>📬</span> Liên Hệ
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/" class="sidebar-link">
+          <span>🏠</span> Về Trang Chủ
+        </a>
+        <form action="/auth/logout" method="POST">
+          <button type="submit" class="sidebar-logout">
+            <span>🚪</span> Đăng Xuất
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <h1 class="admin-title">✏️ Chỉnh Sửa Sách</h1>
+        <div class="admin-user">
+          <span>👤 <%= user.username %></span>
+          <span class="admin-badge">Admin</span>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="edit-book-container">
+          <!-- Breadcrumb -->
+          <div class="admin-breadcrumb">
+            <a href="/admin">Admin</a>
+            <span>/</span>
+            <a href="/admin#books">Danh sách sách</a>
+            <span>/</span>
+            <span>Chỉnh sửa: <%= book.title %></span>
+          </div>
+
+          <% if (success) { %>
+            <div class="alert alert-success"><span>✅</span> <%= success %></div>
+          <% } %>
+          <% if (error) { %>
+            <div class="alert alert-error"><span>⚠️</span> <%= error %></div>
+          <% } %>
+
+          <div class="edit-book-layout">
+            <!-- Current Cover -->
+            <div class="edit-book-preview">
+              <h3>🖼️ Ảnh Bìa Hiện Tại</h3>
+              <div class="current-cover">
+                <img id="previewImg" src="<%= book.cover_image %>" alt="<%= book.title %>" onerror="this.src='/images/books/default.jpg'">
+              </div>
+              <div class="book-quick-info">
+                <div class="quick-info-item">
+                  <span>📖</span> ID: #<%= book.id %>
+                </div>
+                <div class="quick-info-item">
+                  <span>👁️</span> Lượt xem: <%= book.views %>
+                </div>
+                <div class="quick-info-item">
+                  <span>📅</span> Thêm: <%= new Date(book.created_at).toLocaleDateString('vi-VN') %>
+                </div>
+              </div>
+              <div class="edit-book-actions">
+                <a href="/books/<%= book.id %>" class="btn btn-outline" target="_blank">👁️ Xem Trang Sách</a>
+                <a href="/admin" class="btn btn-outline">← Quay Lại</a>
+              </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="edit-book-form-col">
+              <h3>📝 Chỉnh Sửa Thông Tin</h3>
+              <form action="/admin/books/<%= book.id %>/edit" method="POST" enctype="multipart/form-data" class="admin-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>📚 Tên Sách *</label>
+                    <input type="text" name="title" value="<%= book.title %>" required class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label>✍️ Tác Giả *</label>
+                    <input type="text" name="author" value="<%= book.author %>" required class="form-input">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>📂 Thể Loại *</label>
+                    <input type="text" name="genre" value="<%= book.genre %>" required class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label>🏢 Nhà Xuất Bản *</label>
+                    <input type="text" name="publisher" value="<%= book.publisher %>" required class="form-input">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>📦 Số Lượng</label>
+                    <input type="number" name="quantity" value="<%= book.quantity %>" min="0" class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label>🖼️ Thay Ảnh Bìa</label>
+                    <input type="file" name="cover_image" accept="image/*" class="form-input" id="coverInput">
+                    <small class="text-muted">Để trống nếu không muốn thay đổi. Tối đa 5MB.</small>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>📋 Mô Tả</label>
+                  <textarea name="description" rows="6" class="form-input form-textarea"><%= book.description %></textarea>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">💾 Lưu Thay Đổi</button>
+                  <a href="/admin" class="btn btn-outline">Hủy</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/main.js"></script>
+  <script>
+    // Preview image before upload
+    const coverInput = document.getElementById('coverInput');
+    const previewImg = document.getElementById('previewImg');
+    if (coverInput && previewImg) {
+      coverInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => { previewImg.src = e.target.result; };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    // Sidebar toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const adminSidebar = document.getElementById('adminSidebar');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => adminSidebar.classList.toggle('sidebar-open'));
+    }
+  </script>
+</body>
+</html>

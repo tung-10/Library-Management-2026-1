@@ -1,0 +1,132 @@
+<%
+  currentPage = 'home';
+%>
+<%- include('layout/header') %>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>📚 Chào Mừng Đến Thư Viện Sách</h1>
+      <p>Khám phá kho tàng tri thức với hàng ngàn đầu sách phong phú. Đọc sách – Mở mang hiểu biết – Làm phong phú tâm hồn.</p>
+      <div class="hero-actions">
+        <a href="#books" class="btn btn-primary">Khám Phá Ngay</a>
+        <a href="/about" class="btn btn-outline">Tìm Hiểu Thêm</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Books Section -->
+<section class="section" id="books">
+  <div class="container">
+    <div class="section-header">
+      <h2>📖 Danh Sách Sách</h2>
+      <p>Khám phá bộ sưu tập sách đa dạng của chúng tôi</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm theo tên sách, tác giả..." class="search-input">
+      <select id="genreFilter" class="filter-select">
+        <option value="">Tất cả thể loại</option>
+        <%
+          const genres = [...new Set(books.map(b => b.genre))];
+          genres.forEach(genre => {
+        %>
+          <option value="<%= genre %>"><%= genre %></option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="books-grid" id="booksGrid">
+      <% books.forEach(book => { %>
+        <div class="book-card" data-genre="<%= book.genre %>" data-title="<%= book.title.toLowerCase() %>" data-author="<%= book.author.toLowerCase() %>">
+          <a href="/books/<%= book.id %>" class="book-card-link">
+            <div class="book-cover">
+              <img src="<%= book.cover_image %>" alt="<%= book.title %>" loading="lazy" onerror="this.src='/images/books/default.jpg'">
+              <div class="book-overlay">
+                <span class="btn-view">Xem Chi Tiết</span>
+              </div>
+            </div>
+            <div class="book-info">
+              <span class="book-genre"><%= book.genre %></span>
+              <h3 class="book-title"><%= book.title %></h3>
+              <p class="book-author">✍️ <%= book.author %></p>
+              <div class="book-meta">
+                <span class="book-qty <%= book.quantity > 0 ? 'available' : 'unavailable' %>">
+                  <%= book.quantity > 0 ? `📗 Còn ${book.quantity} cuốn` : '📕 Hết sách' %>
+                </span>
+                <span class="book-views">👁️ <%= book.views %></span>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }); %>
+    </div>
+
+    <div id="noResults" class="no-results" style="display:none;">
+      <p>😔 Không tìm thấy sách phù hợp với tìm kiếm của bạn.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Stats -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number"><%= books.length %>+</div>
+        <div class="stat-label">Đầu Sách</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1000+</div>
+        <div class="stat-label">Độc Giả</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Thể Loại</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5★</div>
+        <div class="stat-label">Đánh Giá</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popup Quảng Cáo -->
+<div id="adPopup" class="popup-overlay" style="display:none;">
+  <div class="popup-box">
+    <button class="popup-close" id="closePopup">&times;</button>
+    <div class="popup-content">
+      <div class="popup-badge">🔥 Nổi Bật</div>
+      <h2>Sách Nổi Bật Tháng Này</h2>
+      <% if (featuredBooks.length > 0) { %>
+        <div class="popup-books">
+          <% featuredBooks.forEach(fb => { %>
+            <a href="/books/<%= fb.id %>" class="popup-book-item">
+              <img src="<%= fb.cover_image %>" alt="<%= fb.title %>" onerror="this.src='/images/books/default.jpg'">
+              <div class="popup-book-info">
+                <strong><%= fb.title %></strong>
+                <small><%= fb.author %></small>
+                <span class="popup-views">👁️ <%= fb.views %> lượt xem</span>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
+      <div class="popup-actions">
+        <a href="#books" class="btn btn-primary" id="popupExplore">Khám Phá Ngay</a>
+        <button class="btn btn-outline" id="popupLater">Để Sau</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Dữ liệu featured books
+  window.FEATURED_BOOKS = <%- JSON.stringify(featuredBooks.map(b => ({id: b.id, title: b.title, author: b.author}))) %>;
+</script>
+
+<%- include('layout/footer') %>

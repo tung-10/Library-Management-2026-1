@@ -1,0 +1,56 @@
+# ========================
+#  Node.js
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ========================
+#  Database (SQLite)
+# ========================
+# Xóa 3 dòng dưới nếu muốn commit DB mẫu lên Git
+library.db
+library.db-shm
+library.db-wal
+
+# ========================
+#  Upload ảnh của Admin
+# ========================
+uploads/*
+!uploads/.gitkeep
+
+# ========================
+#  Environment / Secrets
+# ========================
+.env
+.env.*
+!.env.example
+
+# ========================
+#  OS / Editor
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ========================
+#  Logs
+# ========================
+logs/
+*.log
+
+# ========================
+#  Temp / Build
+# ========================
+dist/
+build/
+tmp/
+temp/
+docx_extracted/
+temp_doc.zip

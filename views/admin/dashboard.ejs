@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Admin Dashboard - Thư Viện Sách' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+</head>
+<body class="admin-body">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <span>📚</span>
+        <span>Admin Panel</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#stats" class="sidebar-link active" data-section="stats">
+          <span>📊</span> Thống Kê
+        </a>
+        <a href="#books" class="sidebar-link" data-section="books">
+          <span>📖</span> Quản Lý Sách
+        </a>
+        <a href="#add-book" class="sidebar-link" data-section="add-book">
+          <span>➕</span> Thêm Sách
+        </a>
+        <a href="#comments" class="sidebar-link" data-section="comments">
+          <span>💬</span> Bình Luận
+        </a>
+        <a href="#contacts" class="sidebar-link" data-section="contacts">
+          <span>📬</span> Liên Hệ
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/" class="sidebar-link">
+          <span>🏠</span> Về Trang Chủ
+        </a>
+        <form action="/auth/logout" method="POST">
+          <button type="submit" class="sidebar-logout">
+            <span>🚪</span> Đăng Xuất
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <!-- Header -->
+      <header class="admin-topbar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <h1 class="admin-title">Admin Dashboard</h1>
+        <div class="admin-user">
+          <span>👤 <%= user.username %></span>
+          <span class="admin-badge">Admin</span>
+        </div>
+      </header>
+
+      <!-- Alerts -->
+      <%
+        const urlParams = new URLSearchParams(typeof query !== 'undefined' ? query : '');
+        const successMsg = {
+          'book_added': '✅ Thêm sách thành công!',
+          'book_deleted': '✅ Xóa sách thành công!',
+          'comment_deleted': '✅ Xóa bình luận thành công!',
+          'contact_deleted': '✅ Xóa liên hệ thành công!'
+        };
+      %>
+
+      <div class="admin-content" id="adminContent">
+        <!-- Stats Section -->
+        <section class="admin-section" id="section-stats">
+          <h2>📊 Thống Kê Tổng Quan</h2>
+          <div class="stats-cards">
+            <div class="stat-card-admin primary">
+              <div class="stat-card-icon">👁️</div>
+              <div class="stat-card-info">
+                <div class="stat-card-num"><%= stats.totalViews.toLocaleString() %></div>
+                <div class="stat-card-label">Tổng Lượt Xem</div>
+              </div>
+            </div>
+            <div class="stat-card-admin success">
+              <div class="stat-card-icon">📖</div>
+              <div class="stat-card-info">
+                <div class="stat-card-num"><%= stats.totalBooks %></div>
+                <div class="stat-card-label">Tổng Sách</div>
+              </div>
+            </div>
+            <div class="stat-card-admin warning">
+              <div class="stat-card-icon">💬</div>
+              <div class="stat-card-info">
+                <div class="stat-card-num"><%= stats.totalComments %></div>
+                <div class="stat-card-label">Tổng Bình Luận</div>
+              </div>
+            </div>
+            <div class="stat-card-admin info">
+              <div class="stat-card-icon">📬</div>
+              <div class="stat-card-info">
+                <div class="stat-card-num"><%= stats.totalContacts %></div>
+                <div class="stat-card-label">Tổng Liên Hệ</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Books Section -->
+        <section class="admin-section" id="section-books">
+          <div class="section-title-bar">
+            <h2>📖 Danh Sách Sách</h2>
+            <input type="text" id="bookSearch" placeholder="🔍 Tìm kiếm sách..." class="admin-search">
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="bookTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Ảnh Bìa</th>
+                  <th>Tên Sách</th>
+                  <th>Tác Giả</th>
+                  <th>Thể Loại</th>
+                  <th>Số Lượng</th>
+                  <th>Lượt Xem</th>
+                  <th>Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% books.forEach((book, idx) => { %>
+                  <tr class="book-row" data-title="<%= book.title.toLowerCase() %>" data-author="<%= book.author.toLowerCase() %>">
+                    <td><%= idx + 1 %></td>
+                    <td>
+                      <img src="<%= book.cover_image %>" alt="<%= book.title %>" class="admin-book-thumb" onerror="this.src='/images/books/default.jpg'">
+                    </td>
+                    <td class="book-title-cell">
+                      <strong><%= book.title %></strong>
+                    </td>
+                    <td><%= book.author %></td>
+                    <td><span class="genre-tag"><%= book.genre %></span></td>
+                    <td>
+                      <span class="<%= book.quantity > 0 ? 'qty-available' : 'qty-unavailable' %>">
+                        <%= book.quantity %>
+                      </span>
+                    </td>
+                    <td><%= book.views %></td>
+                    <td class="actions-cell">
+                      <a href="/books/<%= book.id %>" class="btn-action btn-view-sm" target="_blank">👁️</a>
+                      <a href="/admin/books/<%= book.id %>/edit" class="btn-action btn-edit-sm">✏️</a>
+                      <form action="/admin/books/<%= book.id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Xóa sách này?')">
+                        <button type="submit" class="btn-action btn-delete-sm">🗑️</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Add Book Section -->
+        <section class="admin-section" id="section-add-book">
+          <h2>➕ Thêm Sách Mới</h2>
+          <form action="/admin/books/add" method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>📚 Tên Sách *</label>
+                <input type="text" name="title" placeholder="Nhập tên sách..." required class="form-input">
+              </div>
+              <div class="form-group">
+                <label>✍️ Tác Giả *</label>
+                <input type="text" name="author" placeholder="Nhập tên tác giả..." required class="form-input">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>📂 Thể Loại *</label>
+                <input type="text" name="genre" placeholder="VD: Tiểu thuyết, Kỹ năng sống..." required class="form-input">
+              </div>
+              <div class="form-group">
+                <label>🏢 Nhà Xuất Bản *</label>
+                <input type="text" name="publisher" placeholder="Tên nhà xuất bản..." required class="form-input">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>📦 Số Lượng</label>
+                <input type="number" name="quantity" placeholder="Số lượng sách..." min="0" value="1" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>🖼️ Ảnh Bìa</label>
+                <input type="file" name="cover_image" accept="image/*" class="form-input">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>📋 Mô Tả</label>
+              <textarea name="description" rows="4" placeholder="Mô tả nội dung sách..." class="form-input form-textarea"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">➕ Thêm Sách</button>
+          </form>
+        </section>
+
+        <!-- Comments Section -->
+        <section class="admin-section" id="section-comments">
+          <div class="section-title-bar">
+            <h2>💬 Bình Luận (<%= comments.length %>)</h2>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Sách</th>
+                  <th>Người Dùng</th>
+                  <th>Đánh Giá</th>
+                  <th>Nội Dung</th>
+                  <th>Ngày</th>
+                  <th>Xóa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% comments.forEach((comment, idx) => { %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td class="book-title-cell"><strong><%= comment.book_title %></strong></td>
+                    <td>
+                      <div><strong><%= comment.name %></strong></div>
+                      <small class="text-muted"><%= comment.email %></small>
+                    </td>
+                    <td>
+                      <div class="stars-inline">
+                        <% for(let i = 1; i <= 5; i++) { %>
+                          <span class="<%= i <= comment.rating ? 'star-filled' : 'star-empty' %>">★</span>
+                        <% } %>
+                      </div>
+                      <small><%= comment.rating %>/5</small>
+                    </td>
+                    <td class="comment-content-cell">
+                      <span class="comment-preview"><%= comment.content.length > 80 ? comment.content.substring(0,80) + '...' : comment.content %></span>
+                    </td>
+                    <td>
+                      <small><%= new Date(comment.created_at).toLocaleDateString('vi-VN') %></small>
+                    </td>
+                    <td>
+                      <form action="/admin/comments/<%= comment.id %>/delete" method="POST" onsubmit="return confirm('Xóa bình luận này?')">
+                        <button type="submit" class="btn-action btn-delete-sm">🗑️</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Contacts Section -->
+        <section class="admin-section" id="section-contacts">
+          <div class="section-title-bar">
+            <h2>📬 Liên Hệ (<%= contacts.length %>)</h2>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Người Gửi</th>
+                  <th>Email</th>
+                  <th>Tiêu Đề</th>
+                  <th>Nội Dung</th>
+                  <th>Ngày</th>
+                  <th>Xóa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% contacts.forEach((contact, idx) => { %>
+                  <tr>
+                    <td><%= idx + 1 %></td>
+                    <td><strong><%= contact.fullname %></strong></td>
+                    <td><%= contact.email %></td>
+                    <td><%= contact.subject %></td>
+                    <td class="comment-content-cell">
+                      <span class="comment-preview"><%= contact.message.length > 60 ? contact.message.substring(0,60) + '...' : contact.message %></span>
+                    </td>
+                    <td>
+                      <small><%= new Date(contact.created_at).toLocaleDateString('vi-VN') %></small>
+                    </td>
+                    <td>
+                      <form action="/admin/contacts/<%= contact.id %>/delete" method="POST" onsubmit="return confirm('Xóa liên hệ này?')">
+                        <button type="submit" class="btn-action btn-delete-sm">🗑️</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script src="/js/main.js"></script>
+  <script>
+    // Admin sidebar navigation
+    const sidebarLinks = document.querySelectorAll('.sidebar-link[data-section]');
+    const sections = document.querySelectorAll('.admin-section');
+
+    function showSection(sectionId) {
+      sections.forEach(s => s.style.display = 'none');
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      const target = document.getElementById('section-' + sectionId);
+      if (target) target.style.display = 'block';
+      const link = document.querySelector(`.sidebar-link[data-section="${sectionId}"]`);
+      if (link) link.classList.add('active');
+    }
+
+    // Show only stats by default
+    sections.forEach(s => { if (s.id !== 'section-stats') s.style.display = 'none'; });
+
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.getAttribute('data-section');
+        showSection(section);
+        window.location.hash = section;
+      });
+    });
+
+    // Handle hash on load
+    if (window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      showSection(hash);
+    }
+
+    // Sidebar toggle for mobile
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const adminSidebar = document.getElementById('adminSidebar');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        adminSidebar.classList.toggle('sidebar-open');
+      });
+    }
+
+    // Book search
+    const bookSearch = document.getElementById('bookSearch');
+    if (bookSearch) {
+      bookSearch.addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.book-row').forEach(row => {
+          const title = row.getAttribute('data-title');
+          const author = row.getAttribute('data-author');
+          row.style.display = (title.includes(q) || author.includes(q)) ? '' : 'none';
+        });
+      });
+    }
+  </script>
+</body>
+</html>

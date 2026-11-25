@@ -1,0 +1,162 @@
+<%- include('layout/header') %>
+
+<div class="container book-detail-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">🏠 Trang Chủ</a>
+    <span>/</span>
+    <span><%= book.title %></span>
+  </nav>
+
+  <!-- Book Detail -->
+  <div class="book-detail-card">
+    <div class="book-detail-cover">
+      <img src="<%= book.cover_image %>" alt="<%= book.title %>" onerror="this.src='/images/books/default.jpg'">
+      <div class="book-detail-badges">
+        <span class="badge badge-genre"><%= book.genre %></span>
+        <span class="badge <%= book.quantity > 0 ? 'badge-available' : 'badge-unavailable' %>">
+          <%= book.quantity > 0 ? `📗 Còn ${book.quantity} cuốn` : '📕 Hết sách' %>
+        </span>
+      </div>
+    </div>
+    <div class="book-detail-info">
+      <h1 class="book-detail-title"><%= book.title %></h1>
+
+      <div class="book-detail-meta">
+        <div class="meta-item">
+          <span class="meta-label">✍️ Tác Giả</span>
+          <span class="meta-value"><%= book.author %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">📂 Thể Loại</span>
+          <span class="meta-value"><%= book.genre %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🏢 Nhà Xuất Bản</span>
+          <span class="meta-value"><%= book.publisher %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">📦 Số Lượng</span>
+          <span class="meta-value"><%= book.quantity %> cuốn</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">👁️ Lượt Xem</span>
+          <span class="meta-value"><%= book.views %></span>
+        </div>
+        <% if (avgRating) { %>
+        <div class="meta-item">
+          <span class="meta-label">⭐ Đánh Giá</span>
+          <span class="meta-value rating-display">
+            <%= avgRating %>/5
+            <span class="stars-display">
+              <% for(let i = 1; i <= 5; i++) { %>
+                <span class="star <%= i <= Math.round(avgRating) ? 'star-filled' : 'star-empty' %>">★</span>
+              <% } %>
+            </span>
+            (<%= comments.length %> đánh giá)
+          </span>
+        </div>
+        <% } %>
+      </div>
+
+      <% if (book.description) { %>
+        <div class="book-description">
+          <h3>📋 Mô Tả</h3>
+          <p><%= book.description %></p>
+        </div>
+      <% } %>
+
+      <div class="book-detail-actions">
+        <a href="/" class="btn btn-outline">← Quay Lại</a>
+        <% if (user && user.role === 'admin') { %>
+          <a href="/admin/books/<%= book.id %>/edit" class="btn btn-secondary">✏️ Chỉnh Sửa</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment Form -->
+  <section class="comment-section">
+    <h2>💬 Viết Đánh Giá</h2>
+
+    <% if (success) { %>
+      <div class="alert alert-success"><span>✅</span> <%= success %></div>
+    <% } %>
+    <% if (error) { %>
+      <div class="alert alert-error"><span>⚠️</span> <%= error %></div>
+    <% } %>
+
+    <form action="/books/<%= book.id %>/comment" method="POST" class="comment-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="comment-name">👤 Họ Tên *</label>
+          <input type="text" id="comment-name" name="name" placeholder="Nhập họ tên của bạn..." required class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="comment-email">📧 Email *</label>
+          <input type="email" id="comment-email" name="email" placeholder="Nhập email của bạn..." required class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>⭐ Điểm Đánh Giá *</label>
+        <div class="star-rating">
+          <% for(let i = 5; i >= 1; i--) { %>
+            <input type="radio" id="star<%= i %>" name="rating" value="<%= i %>" required>
+            <label for="star<%= i %>" title="<%= i %> sao">★</label>
+          <% } %>
+        </div>
+        <small class="rating-hint">Chọn từ 1 đến 5 sao</small>
+      </div>
+
+      <div class="form-group">
+        <label for="comment-content">📝 Nội Dung *</label>
+        <textarea id="comment-content" name="content" rows="5" placeholder="Chia sẻ cảm nghĩ của bạn về cuốn sách này..." required class="form-input form-textarea"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">📤 Gửi Đánh Giá</button>
+    </form>
+  </section>
+
+  <!-- Comments List -->
+  <section class="comments-list-section">
+    <h2>📋 Tất Cả Đánh Giá (<%= comments.length %>)</h2>
+
+    <% if (comments.length === 0) { %>
+      <div class="empty-state">
+        <span>📭</span>
+        <p>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá cuốn sách này!</p>
+      </div>
+    <% } else { %>
+      <div class="comments-list">
+        <% comments.forEach(comment => { %>
+          <div class="comment-card">
+            <div class="comment-header">
+              <div class="comment-avatar">
+                <%= comment.name.charAt(0).toUpperCase() %>
+              </div>
+              <div class="comment-meta">
+                <strong class="comment-author"><%= comment.name %></strong>
+                <span class="comment-email"><%= comment.email.replace(/(.{2}).*(@.*)/, '$1***$2') %></span>
+                <div class="comment-rating">
+                  <% for(let i = 1; i <= 5; i++) { %>
+                    <span class="star <%= i <= comment.rating ? 'star-filled' : 'star-empty' %>">★</span>
+                  <% } %>
+                  <span class="rating-num">(<%= comment.rating %>/5)</span>
+                </div>
+              </div>
+              <span class="comment-date">
+                <%= new Date(comment.created_at).toLocaleDateString('vi-VN', {year: 'numeric', month: 'long', day: 'numeric'}) %>
+              </span>
+            </div>
+            <div class="comment-body">
+              <p><%= comment.content %></p>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </section>
+</div>
+
+<%- include('layout/footer') %>

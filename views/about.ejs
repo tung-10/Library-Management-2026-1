@@ -1,0 +1,189 @@
+<%
+  currentPage = 'about';
+%>
+<%- include('layout/header') %>
+
+<!-- Hero About -->
+<section class="hero hero-small">
+  <div class="container">
+    <h1>ℹ Giới Thiệu & Liên Hệ</h1>
+    <p>Tìm hiểu về Thư Viện Sách và kết nối với chúng tôi</p>
+  </div>
+</section>
+
+<div class="container">
+  <!-- About Section -->
+  <section class="section about-section">
+    <div class="about-grid">
+      <div class="about-info">
+        <h2>🏛️ Về Thư Viện Chúng Tôi</h2>
+        <p>
+          Thư Viện Sách được thành lập năm 2020 với sứ mệnh mang đến cơ hội tiếp cận tri thức cho mọi người. 
+          Chúng tôi tin rằng sách là cầu nối giữa con người và tri thức, giữa hiện tại và quá khứ, giữa thực tế và trí tưởng tượng.
+        </p>
+        <p>
+          Với bộ sưu tập hơn 10.000 đầu sách thuộc nhiều thể loại khác nhau, từ văn học, khoa học, lịch sử đến kỹ năng sống và truyện tranh, 
+          chúng tôi cam kết phục vụ nhu cầu đọc sách đa dạng của cộng đồng.
+        </p>
+
+        <div class="about-stats">
+          <div class="about-stat">
+            <span class="about-stat-num">10.000+</span>
+            <span class="about-stat-label">Đầu Sách</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">5.000+</span>
+            <span class="about-stat-label">Thành Viên</span>
+          </div>
+          <div class="about-stat">
+            <span class="about-stat-num">6+</span>
+            <span class="about-stat-label">Năm Hoạt Động</span>
+          </div>
+        </div>
+
+        <div class="mission-box">
+          <h3> Sứ Mệnh</h3>
+          <p>Tạo ra một không gian đọc sách thân thiện, hiện đại và dễ tiếp cận, nơi mọi người đều có thể tìm thấy nguồn cảm hứng và kiến thức.</p>
+        </div>
+      </div>
+      <div class="about-image-col">
+        <div class="about-image-box">
+          <span class="about-icon-big">📚</span>
+          <p>Thư Viện Sách</p>
+          <small>Tri thức là sức mạnh</small>
+        </div>
+        <div class="hours-card">
+          <h3>🕐 Giờ Hoạt Động</h3>
+          <table class="hours-table">
+            <tr>
+              <td>Thứ 2 – Thứ 6</td>
+              <td><strong>7:30 – 21:00</strong></td>
+            </tr>
+            <tr>
+              <td>Thứ 7</td>
+              <td><strong>8:00 – 18:00</strong></td>
+            </tr>
+            <tr>
+              <td>Chủ Nhật</td>
+              <td><strong>9:00 – 17:00</strong></td>
+            </tr>
+            <tr>
+              <td>Ngày lễ</td>
+              <td><strong>Đóng cửa</strong></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rules Section -->
+  <section class="section rules-section">
+    <h2>📋 Quy Định Thư Viện</h2>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <span class="rule-icon">📖</span>
+        <h3>Mượn Sách</h3>
+        <ul>
+          <li>Mỗi thẻ được mượn tối đa 5 cuốn</li>
+          <li>Thời hạn mượn: 14 ngày/cuốn</li>
+          <li>Có thể gia hạn tối đa 2 lần</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">🔇</span>
+        <h3>Trong Thư Viện</h3>
+        <ul>
+          <li>Giữ trật tự, không làm ồn</li>
+          <li>Không mang đồ ăn, uống vào</li>
+          <li>Tắt hoặc để điện thoại chế độ im lặng</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">📱</span>
+        <h3>Thẻ Thư Viện</h3>
+        <ul>
+          <li>Cần có thẻ để mượn sách</li>
+          <li>Thẻ có giá trị 1 năm</li>
+          <li>Không cho mượn thẻ</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">💰</span>
+        <h3>Phí Phạt</h3>
+        <ul>
+          <li>Trả trễ: 2.000đ/ngày/cuốn</li>
+          <li>Mất sách: đền theo giá trị sách</li>
+          <li>Hư sách: bồi thường tùy mức độ</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section contact-section" id="contact">
+    <div class="contact-grid">
+      <div class="contact-info-col">
+        <h2>📬 Thông Tin Liên Hệ</h2>
+        <div class="contact-items">
+          <div class="contact-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <strong>Địa Chỉ</strong>
+              <p>1 Đại Cồ Việt, Phường Bạch Mai, Hà Nội</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📞</span>
+            <div>
+              <strong>Điện Thoại</strong>
+              <p>012 234 5678</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <strong>Email</strong>
+              <p>info@thuviensach.vn</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-col">
+        <h2>✉️ Gửi Liên Hệ</h2>
+
+        <% if (success) { %>
+          <div class="alert alert-success"><span>✅</span> <%= success %></div>
+        <% } %>
+        <% if (error) { %>
+          <div class="alert alert-error"><span>⚠️</span> <%= error %></div>
+        <% } %>
+
+        <form action="/about/contact" method="POST" class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullname">Họ và Tên *</label>
+              <input type="text" id="fullname" name="fullname" placeholder="Nhập họ và tên..." required class="form-input">
+            </div>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" placeholder="Nhập địa chỉ email..." required class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="subject">Tiêu Đề *</label>
+            <input type="text" id="subject" name="subject" placeholder="Tiêu đề liên hệ..." required class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="message">Nội Dung *</label>
+            <textarea id="message" name="message" rows="6" placeholder="Nội dung bạn muốn gửi đến chúng tôi..." required class="form-input form-textarea"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">📤 Gửi Liên Hệ</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%- include('layout/footer') %>

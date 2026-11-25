@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Thư Viện Sách' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="navbar-brand">
+        <span class="brand-icon">📚</span>
+        <span class="brand-text">Thư Viện Sách</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="navLinks">
+        <a href="/" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">Trang Chủ</a>
+        <a href="/about" class="nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'active' : '' %>">Giới Thiệu</a>
+        <% if (user) { %>
+          <% if (user.role === 'admin') { %>
+            <a href="/admin" class="nav-link admin-link">⚙️ Admin</a>
+          <% } %>
+          <div class="nav-user">
+            <span class="user-greeting">👤 <%= user.username %></span>
+            <form action="/auth/logout" method="POST" style="display:inline;">
+              <button type="submit" class="btn-logout">Đăng Xuất</button>
+            </form>
+          </div>
+        <% } else { %>
+          <a href="/auth/login" class="nav-link btn-login">Đăng Nhập</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="main-content">
